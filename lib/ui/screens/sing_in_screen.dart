@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class SingInScreen extends StatefulWidget {
   const SingInScreen({super.key});
@@ -12,7 +13,10 @@ class _SingInScreenState extends State<SingInScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-        child: Text('Welcome to dark Place'),
+        child: Text(
+          'Welcome to dark Place',
+          style: GoogleFonts.robotoMono(fontWeight: FontWeight.bold),
+        ),
       ),
     );
   }
