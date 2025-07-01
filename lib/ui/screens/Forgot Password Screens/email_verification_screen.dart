@@ -1,6 +1,9 @@
 import 'package:email_validator/email_validator.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:task_manager/ui/widgets/screen_background.dart';
+
+import '../sing_in_screen.dart';
 
 class EmailVerificationScreen extends StatefulWidget {
   const EmailVerificationScreen({super.key});
@@ -72,6 +75,8 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
                               fontWeight: FontWeight.bold,
                               letterSpacing: 0.4,
                             ),
+                            recognizer: TapGestureRecognizer()
+                              ..onTap = _onTapSingInButton,
                           ),
                         ],
                       ),
@@ -84,5 +89,18 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
         ),
       ),
     );
+  }
+
+  void _onTapSingInButton() {
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => SingInScreen()),
+    );
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _emailTEController.dispose();
   }
 }

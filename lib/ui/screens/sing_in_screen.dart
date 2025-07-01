@@ -113,7 +113,7 @@ class _SingInScreenState extends State<SingInScreen> {
   void _onTapSingUpButton() {
     Navigator.pushReplacement(
       context,
-      MaterialPageRoute(builder: (context) => HomeScreen()),
+      MaterialPageRoute(builder: (context) => SingUpScreen()),
     );
   }
 
@@ -128,8 +128,15 @@ class _SingInScreenState extends State<SingInScreen> {
     if (_fromKey.currentState!.validate()) {
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => SingUpScreen()),
+        MaterialPageRoute(builder: (context) => HomeScreen()),
       );
     }
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _emailTEController.dispose();
+    _passwordTEController.dispose();
   }
 }
