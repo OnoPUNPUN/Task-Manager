@@ -82,6 +82,7 @@ class _SingInScreenState extends State<SingInScreen> {
                             text: "Don't have account? ",
                             style: TextStyle(
                               color: Colors.black,
+                              fontWeight: FontWeight.bold,
                               letterSpacing: 0.4,
                             ),
                             children: [

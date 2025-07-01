@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:task_manager/ui/screens/Forgot%20Password%20Screens/email_verification_screen.dart';
+import 'package:task_manager/ui/screens/Forgot%20Password%20Screens/pin_verification_screen.dart';
 import 'package:task_manager/ui/screens/splash_screen.dart';
 
 class TaskMangerApp extends StatelessWidget {
@@ -12,7 +12,7 @@ class TaskMangerApp extends StatelessWidget {
       theme: ThemeData(
         colorSchemeSeed: Colors.green,
         textTheme: TextTheme(
-          titleLarge: TextStyle(fontSize: 28, fontWeight: FontWeight.w700),
+          titleLarge: TextStyle(fontSize: 35, fontWeight: FontWeight.w700),
           titleMedium: TextStyle(fontSize: 16, color: Colors.grey),
         ),
         inputDecorationTheme: InputDecorationTheme(
@@ -40,7 +40,7 @@ class TaskMangerApp extends StatelessWidget {
         )
       ),
       //  SplashScreen() - for testing
-      home: const SplashScreen(),
+      home: const PinVerificationScreen(),
     );
   }
 }
