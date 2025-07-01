@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:task_manager/ui/screens/Forgot%20Password%20Screens/email_verification_screen.dart';
 import 'package:task_manager/ui/screens/splash_screen.dart';
 
 class TaskMangerApp extends StatelessWidget {
@@ -6,9 +7,40 @@ class TaskMangerApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: SplashScreen(),
+      theme: ThemeData(
+        colorSchemeSeed: Colors.green,
+        textTheme: TextTheme(
+          titleLarge: TextStyle(fontSize: 28, fontWeight: FontWeight.w700),
+          titleMedium: TextStyle(fontSize: 16, color: Colors.grey),
+        ),
+        inputDecorationTheme: InputDecorationTheme(
+          fillColor: Colors.white,
+          filled: true,
+          hintStyle: TextStyle(color: Colors.grey),
+          border: OutlineInputBorder(borderSide: BorderSide.none),
+          focusedBorder: OutlineInputBorder(borderSide: BorderSide.none),
+          errorBorder: OutlineInputBorder(borderSide: BorderSide.none),
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: 16,
+            vertical: 12,
+          ),
+        ),
+        elevatedButtonTheme: ElevatedButtonThemeData(
+          style: ElevatedButton.styleFrom(
+            fixedSize: Size.fromWidth(double.maxFinite),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8)
+            ),
+            padding: const EdgeInsets.symmetric(vertical: 12),
+            backgroundColor: Color(0xFF21bf73),
+            foregroundColor: Colors.white
+          )
+        )
+      ),
+      //  SplashScreen() - for testing
+      home: const SplashScreen(),
     );
   }
 }

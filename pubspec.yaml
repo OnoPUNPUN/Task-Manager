@@ -9,8 +9,9 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  flutter_svg: ^2.2.0
-  google_fonts: ^6.2.1
+  flutter_svg:
+  google_fonts:
+  email_validator:
 
   cupertino_icons: ^1.0.8
 
