@@ -7,6 +7,7 @@ class PinVerificationScreen extends StatefulWidget {
   @override
   State<PinVerificationScreen> createState() => _PinVerificationScreenState();
 }
+//TODO: HAVE TO COMPLETE PIN VERIFICATION
 
 class _PinVerificationScreenState extends State<PinVerificationScreen> {
   @override
@@ -30,6 +31,7 @@ class _PinVerificationScreenState extends State<PinVerificationScreen> {
                     'A 6 digit verification pin has send to your email address',
                     style: Theme.of(context).textTheme.titleMedium,
                   ),
+                  const SizedBox(height: 24,),
                 ],
               ),
             ),
