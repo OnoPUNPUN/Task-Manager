@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:task_manager/ui/screens/Forgot%20Password%20Screens/pin_verification_screen.dart';
-import 'package:task_manager/ui/screens/Forgot%20Password%20Screens/set_password_screen.dart';
 import 'package:task_manager/ui/screens/splash_screen.dart';
-
 class TaskMangerApp extends StatelessWidget {
   const TaskMangerApp({super.key});
 
@@ -41,7 +38,7 @@ class TaskMangerApp extends StatelessWidget {
         )
       ),
       //  SplashScreen() - for testing
-      home: const SetPasswordScreen(),
+      home: const SplashScreen(),
     );
   }
 }

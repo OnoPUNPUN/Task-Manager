@@ -1,6 +1,7 @@
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:task_manager/ui/screens/Forgot%20Password%20Screens/pin_verification_screen.dart';
 import 'package:task_manager/ui/widgets/screen_background.dart';
 
 import '../sing_in_screen.dart';
@@ -54,7 +55,7 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
                   ),
                   const SizedBox(height: 16),
                   ElevatedButton(
-                    onPressed: () {},
+                    onPressed: _onTapConfirmButton,
                     child: Icon(Icons.arrow_circle_right_outlined),
                   ),
                   const SizedBox(height: 32),
@@ -96,6 +97,15 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
       context,
       MaterialPageRoute(builder: (context) => SingInScreen()),
     );
+  }
+
+  void _onTapConfirmButton() {
+    if (_globalKey.currentState!.validate()) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => PinVerificationScreen()),
+      );
+    }
   }
 
   @override
