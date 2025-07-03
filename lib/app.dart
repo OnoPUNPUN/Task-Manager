@@ -1,5 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:task_manager/ui/screens/Forgot%20Password%20Screens/email_verification_screen.dart';
+import 'package:task_manager/ui/screens/Forgot%20Password%20Screens/pin_verification_screen.dart';
+import 'package:task_manager/ui/screens/Forgot%20Password%20Screens/set_password_screen.dart';
+import 'package:task_manager/ui/screens/home_screen.dart';
+import 'package:task_manager/ui/screens/sing_in_screen.dart';
+import 'package:task_manager/ui/screens/sing_up_screen.dart';
 import 'package:task_manager/ui/screens/splash_screen.dart';
+
 class TaskMangerApp extends StatelessWidget {
   const TaskMangerApp({super.key});
 
@@ -29,16 +36,24 @@ class TaskMangerApp extends StatelessWidget {
           style: ElevatedButton.styleFrom(
             fixedSize: Size.fromWidth(double.maxFinite),
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(8)
+              borderRadius: BorderRadius.circular(8),
             ),
             padding: const EdgeInsets.symmetric(vertical: 12),
             backgroundColor: Color(0xFF21bf73),
-            foregroundColor: Colors.white
-          )
-        )
+            foregroundColor: Colors.white,
+          ),
+        ),
       ),
-      //  SplashScreen() - for testing
-      home: const SplashScreen(),
+      initialRoute: '/',
+      routes: {
+        SplashScreen.name: (context) => SplashScreen(),
+        SingInScreen.name: (context) => SingInScreen(),
+        SingUpScreen.name: (context) => SingUpScreen(),
+        HomeScreen.name: (context) => HomeScreen(),
+        SetPasswordScreen.name: (context) => SetPasswordScreen(),
+        PinVerificationScreen.name: (context) => PinVerificationScreen(),
+        EmailVerificationScreen.name: (context) => EmailVerificationScreen(),
+      },
     );
   }
 }

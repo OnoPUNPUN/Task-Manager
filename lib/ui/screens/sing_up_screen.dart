@@ -9,6 +9,8 @@ import 'home_screen.dart';
 class SingUpScreen extends StatefulWidget {
   const SingUpScreen({super.key});
 
+  static const String name = '/sing-up';
+
   @override
   State<SingUpScreen> createState() => _SingUpScreenState();
 }
@@ -144,18 +146,12 @@ class _SingUpScreenState extends State<SingUpScreen> {
   }
 
   void _onTapSingInButton() {
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (context) => SingInScreen()),
-    );
+    Navigator.pushReplacementNamed(context, SingInScreen.name);
   }
 
   void _onTapConfirmButton() {
     if (_globalKey.currentState!.validate()) {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => HomeScreen()),
-      );
+      Navigator.pushReplacementNamed(context, HomeScreen.name);
     }
   }
 

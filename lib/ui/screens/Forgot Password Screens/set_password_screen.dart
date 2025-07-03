@@ -7,6 +7,8 @@ import '../sing_in_screen.dart';
 class SetPasswordScreen extends StatefulWidget {
   const SetPasswordScreen({super.key});
 
+  static const String name = '/set-password';
+
   @override
   State<SetPasswordScreen> createState() => _SetPasswordScreenState();
 }
@@ -73,7 +75,10 @@ class _SetPasswordScreenState extends State<SetPasswordScreen> {
                     },
                   ),
                   const SizedBox(height: 16),
-                  ElevatedButton(onPressed: _onTapConfirmButton, child: Text('Confirm')),
+                  ElevatedButton(
+                    onPressed: _onTapConfirmButton,
+                    child: Text('Confirm'),
+                  ),
                   const SizedBox(height: 32),
                   Center(
                     child: RichText(
@@ -108,19 +113,14 @@ class _SetPasswordScreenState extends State<SetPasswordScreen> {
     );
   }
 
+  //SingInScreen
   void _onTapSingInButton() {
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (context) => SingInScreen()),
-    );
+    Navigator.pushReplacementNamed(context, SingInScreen.name);
   }
 
   void _onTapConfirmButton() {
     if (_globalKey.currentState!.validate()) {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => SingInScreen()),
-      );
+      Navigator.pushReplacementNamed(context, SingInScreen.name);
     }
   }
 

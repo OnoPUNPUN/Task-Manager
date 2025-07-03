@@ -9,6 +9,8 @@ import 'home_screen.dart';
 class SingInScreen extends StatefulWidget {
   const SingInScreen({super.key});
 
+  static const String name = '/sing-in';
+
   @override
   State<SingInScreen> createState() => _SingInScreenState();
 }
@@ -112,25 +114,17 @@ class _SingInScreenState extends State<SingInScreen> {
   }
 
   void _onTapSingUpButton() {
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (context) => SingUpScreen()),
-    );
+    Navigator.pushReplacementNamed(context, SingUpScreen.name);
   }
 
   void _onTapForgotPasswordButton() {
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (context) => EmailVerificationScreen()),
-    );
+    Navigator.pushReplacementNamed(context, EmailVerificationScreen.name);
   }
+
 
   void _onTapSingInButton() {
     if (_fromKey.currentState!.validate()) {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => HomeScreen()),
-      );
+      Navigator.pushReplacementNamed(context, HomeScreen.name);
     }
   }
 

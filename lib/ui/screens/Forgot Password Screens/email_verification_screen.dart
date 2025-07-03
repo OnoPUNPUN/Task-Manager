@@ -9,6 +9,8 @@ import '../sing_in_screen.dart';
 class EmailVerificationScreen extends StatefulWidget {
   const EmailVerificationScreen({super.key});
 
+  static const String name = '/email-verification';
+
   @override
   State<EmailVerificationScreen> createState() =>
       _EmailVerificationScreenState();
@@ -93,18 +95,12 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
   }
 
   void _onTapSingInButton() {
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (context) => SingInScreen()),
-    );
+    Navigator.pushReplacementNamed(context, SingInScreen.name);
   }
 
   void _onTapConfirmButton() {
     if (_globalKey.currentState!.validate()) {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => PinVerificationScreen()),
-      );
+      Navigator.pushReplacementNamed(context, PinVerificationScreen.name);
     }
   }
 

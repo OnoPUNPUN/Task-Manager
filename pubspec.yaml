@@ -12,6 +12,7 @@ dependencies:
   flutter_svg:
   google_fonts:
   email_validator:
+  pin_code_fields:
 
   cupertino_icons: ^1.0.8
 
