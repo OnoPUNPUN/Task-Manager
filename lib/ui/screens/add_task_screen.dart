@@ -74,7 +74,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
 
   void _onTapSubmitButton() {
     if (_globalKey.currentState!.validate()) {
-      // TODO: ADD NEW TASK
+      //TODO: ADD NEW TASK
     }
     Navigator.pop(context);
   }

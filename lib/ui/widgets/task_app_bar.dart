@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../screens/sing_in_screen.dart';
+import '../screens/update_profile_screen.dart';
 
 class TaskAppBar extends StatefulWidget implements PreferredSizeWidget {
   const TaskAppBar({super.key});
@@ -33,10 +34,13 @@ class _TaskAppBarState extends State<TaskAppBar> {
         padding: const EdgeInsets.only(left: 8),
         child: Row(
           children: [
-            CircleAvatar(
-              radius: 24,
-              backgroundImage: const NetworkImage(
-                'https://i.pinimg.com/736x/92/36/b9/9236b9e8e41a5e84eb0b689614aaeddf.jpg',
+            GestureDetector(
+              onTap: _onTapProfile,
+              child: CircleAvatar(
+                radius: 24,
+                backgroundImage: const NetworkImage(
+                  'https://i.pinimg.com/736x/92/36/b9/9236b9e8e41a5e84eb0b689614aaeddf.jpg',
+                ),
               ),
             ),
             const SizedBox(width: 10),
@@ -74,5 +78,9 @@ class _TaskAppBarState extends State<TaskAppBar> {
 
   void _onTapSignOutButton() {
     Navigator.pushNamedAndRemoveUntil(context, SingInScreen.name, (_) => false);
+  }
+
+  void _onTapProfile() {
+    Navigator.pushNamed(context, UpdateProfileScreen.name);
   }
 }

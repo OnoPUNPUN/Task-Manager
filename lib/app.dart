@@ -7,6 +7,7 @@ import 'package:task_manager/ui/screens/home_screen.dart';
 import 'package:task_manager/ui/screens/sing_in_screen.dart';
 import 'package:task_manager/ui/screens/sing_up_screen.dart';
 import 'package:task_manager/ui/screens/splash_screen.dart';
+import 'package:task_manager/ui/screens/update_profile_screen.dart';
 
 class TaskMangerApp extends StatelessWidget {
   const TaskMangerApp({super.key});
@@ -55,6 +56,7 @@ class TaskMangerApp extends StatelessWidget {
         PinVerificationScreen.name: (context) => PinVerificationScreen(),
         EmailVerificationScreen.name: (context) => EmailVerificationScreen(),
         AddTaskScreen.name : (context) => AddTaskScreen(),
+        UpdateProfileScreen.name : (context) => UpdateProfileScreen()
       },
     );
   }
