@@ -15,26 +15,35 @@ class TaskAppBar extends StatefulWidget implements PreferredSizeWidget {
 class _TaskAppBarState extends State<TaskAppBar> {
   @override
   Widget build(BuildContext context) {
+    final canPop = Navigator.canPop(context);
+
     return AppBar(
-      backgroundColor: Color.fromRGBO(33, 191, 115, 1),
-      flexibleSpace: Container(
-        margin: EdgeInsets.fromLTRB(10, 40, 10, 0),
+      backgroundColor: const Color(0xFF21BF73),
+
+      leading: canPop
+          ? IconButton(
+              icon: const Icon(Icons.arrow_back),
+              color: Colors.white,
+              onPressed: () => Navigator.pop(context),
+            )
+          : null,
+      leadingWidth: canPop ? 40 : 0,
+      titleSpacing: 0,
+      title: Padding(
+        padding: const EdgeInsets.only(left: 8),
         child: Row(
           children: [
             CircleAvatar(
-              backgroundColor: Colors.transparent,
               radius: 24,
-              child: ClipOval(
-                child: Image.network(
-                  "https://i.pinimg.com/736x/92/36/b9/9236b9e8e41a5e84eb0b689614aaeddf.jpg",
-                ),
+              backgroundImage: const NetworkImage(
+                'https://i.pinimg.com/736x/92/36/b9/9236b9e8e41a5e84eb0b689614aaeddf.jpg',
               ),
             ),
-            SizedBox(width: 10),
+            const SizedBox(width: 10),
             Column(
-              mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: const [
                 Text(
                   'Wasimul Bari Tonmoy',
                   style: TextStyle(
@@ -45,27 +54,25 @@ class _TaskAppBarState extends State<TaskAppBar> {
                 ),
                 Text(
                   'tonmoy@gmail.com',
-                  style: TextStyle(
-                    fontSize: 13,
-                    fontWeight: FontWeight.w400,
-                    color: Colors.white,
-                  ),
+                  style: TextStyle(fontSize: 13, color: Colors.white),
                 ),
               ],
             ),
           ],
         ),
       ),
-      actions: [IconButton(onPressed: _onTapSingOutButton, icon: Icon(Icons.logout))],
-      actionsIconTheme: IconThemeData(color: Colors.white),
+
+      actions: [
+        IconButton(
+          icon: const Icon(Icons.logout),
+          color: Colors.white,
+          onPressed: _onTapSignOutButton,
+        ),
+      ],
     );
   }
 
-  void _onTapSingOutButton() {
-    Navigator.pushNamedAndRemoveUntil(
-      context,
-      SingInScreen.name,
-      (predicate) => false,
-    );
+  void _onTapSignOutButton() {
+    Navigator.pushNamedAndRemoveUntil(context, SingInScreen.name, (_) => false);
   }
 }

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:task_manager/ui/add_task_screen.dart';
+import 'package:task_manager/ui/screens/add_task_screen.dart';
 import 'package:task_manager/ui/screens/Forgot%20Password%20Screens/email_verification_screen.dart';
 import 'package:task_manager/ui/screens/Forgot%20Password%20Screens/pin_verification_screen.dart';
 import 'package:task_manager/ui/screens/Forgot%20Password%20Screens/set_password_screen.dart';
