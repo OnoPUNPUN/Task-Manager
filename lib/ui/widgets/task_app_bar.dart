@@ -81,6 +81,9 @@ class _TaskAppBarState extends State<TaskAppBar> {
   }
 
   void _onTapProfile() {
-    Navigator.pushNamed(context, UpdateProfileScreen.name);
+    if(ModalRoute.of(context)!.settings.name != UpdateProfileScreen.name){
+      Navigator.pushNamed(context, UpdateProfileScreen.name);
+    }
+
   }
 }

@@ -16,9 +16,9 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
   Widget build(BuildContext context) {
     const stats = [
       (9, 'Canceled'),
-      (9, 'Completed'),
-      (9, 'Progress'),
-      (9, 'New Task'),
+      (10, 'Completed'),
+      (6, 'Progress'),
+      (11, 'New Task'),
     ];
 
     return Scaffold(

@@ -13,6 +13,7 @@ dependencies:
   google_fonts:
   email_validator:
   pin_code_fields:
+  image_picker:
 
   cupertino_icons: ^1.0.8
 
