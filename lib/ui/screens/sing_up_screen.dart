@@ -1,9 +1,12 @@
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:task_manager/data/service/network_caller.dart';
+import 'package:task_manager/data/urls.dart';
 import 'package:task_manager/ui/screens/sing_in_screen.dart';
 import 'package:task_manager/ui/widgets/screen_background.dart';
 
+import '../widgets/snack_bar_message.dart';
 import 'home_screen.dart';
 
 class SingUpScreen extends StatefulWidget {
@@ -22,6 +25,7 @@ class _SingUpScreenState extends State<SingUpScreen> {
   final TextEditingController _lastNameTEController = TextEditingController();
   final TextEditingController _mobileTEController = TextEditingController();
   final TextEditingController _passwordTEController = TextEditingController();
+  bool _singUpInProgress = false;
 
   @override
   Widget build(BuildContext context) {
@@ -100,16 +104,20 @@ class _SingUpScreenState extends State<SingUpScreen> {
                     controller: _passwordTEController,
                     decoration: InputDecoration(hintText: 'Password'),
                     validator: (String? value) {
-                      if ((value?.length ?? 0) <= 0) {
+                      if ((value?.length ?? 0) <= 6) {
                         return 'Enter a valid Password';
                       }
                       return null;
                     },
                   ),
                   const SizedBox(height: 16),
-                  ElevatedButton(
-                    onPressed: _onTapConfirmButton,
-                    child: Icon(Icons.arrow_circle_right_outlined),
+                  Visibility(
+                    visible: _singUpInProgress == false,
+                    replacement: Center(child: CircularProgressIndicator()),
+                    child: ElevatedButton(
+                      onPressed: _onTapSingUp,
+                      child: Icon(Icons.arrow_circle_right_outlined),
+                    ),
                   ),
                   const SizedBox(height: 32),
                   Center(
@@ -149,10 +157,49 @@ class _SingUpScreenState extends State<SingUpScreen> {
     Navigator.pushReplacementNamed(context, SingInScreen.name);
   }
 
-  void _onTapConfirmButton() {
+  void _onTapSingUp() {
     if (_globalKey.currentState!.validate()) {
-      Navigator.pushReplacementNamed(context, HomeScreen.name);
+      _singUp();
     }
+  }
+
+  Future<void> _singUp() async {
+    _singUpInProgress = true;
+    setState(() {});
+
+    Map<String, String> requestBody = {
+      "email": _emailTEController.text.trim(),
+      "firstName": _firstNameTEController.text.trim(),
+      "lastName": _lastNameTEController.text.trim(),
+      "mobile": _mobileTEController.text.trim(),
+      "password": _passwordTEController.text,
+    };
+
+    NetworkResponse response = await NetworkCaller.postRequest(
+      url: Urls.registrationUrl,
+      body: requestBody,
+    );
+
+    _singUpInProgress = false;
+    setState(() {});
+
+    if (response.isSuccess) {
+      clearTextFields();
+      ShowSnackBarMessage(
+        context,
+        "Registration has been success. Please login",
+      );
+    } else {
+      ShowSnackBarMessage(context, response.errorMessage!);
+    }
+  }
+
+  void clearTextFields() {
+    _emailTEController.clear();
+    _firstNameTEController.clear();
+    _lastNameTEController.clear();
+    _mobileTEController.clear();
+    _passwordTEController.clear();
   }
 
   @override
