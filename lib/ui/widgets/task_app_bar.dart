@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:task_manager/ui/controller/auth_controller.dart';
 
 import '../screens/sing_in_screen.dart';
 import '../screens/update_profile_screen.dart';
@@ -76,14 +77,14 @@ class _TaskAppBarState extends State<TaskAppBar> {
     );
   }
 
-  void _onTapSignOutButton() {
+  Future<void> _onTapSignOutButton() async {
+    await AuthController.removeUserData();
     Navigator.pushNamedAndRemoveUntil(context, SingInScreen.name, (_) => false);
   }
 
   void _onTapProfile() {
-    if(ModalRoute.of(context)!.settings.name != UpdateProfileScreen.name){
+    if (ModalRoute.of(context)!.settings.name != UpdateProfileScreen.name) {
       Navigator.pushNamed(context, UpdateProfileScreen.name);
     }
-
   }
 }

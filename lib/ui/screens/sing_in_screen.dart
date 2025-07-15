@@ -1,8 +1,14 @@
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:task_manager/data/models/user_model.dart';
+import 'package:task_manager/data/service/network_caller.dart';
+import 'package:task_manager/data/urls.dart';
+import 'package:task_manager/ui/controller/auth_controller.dart';
 import 'package:task_manager/ui/screens/sing_up_screen.dart';
 import '../widgets/screen_background.dart';
+import '../widgets/snack_bar_message.dart';
 import 'Forgot Password Screens/email_verification_screen.dart';
 import 'home_screen.dart';
 
@@ -19,6 +25,7 @@ class _SingInScreenState extends State<SingInScreen> {
   final TextEditingController _emailTEController = TextEditingController();
   final TextEditingController _passwordTEController = TextEditingController();
   final GlobalKey<FormState> _fromKey = GlobalKey<FormState>();
+  bool _singInInProgress = false;
 
   @override
   Widget build(BuildContext context) {
@@ -64,9 +71,13 @@ class _SingInScreenState extends State<SingInScreen> {
                     },
                   ),
                   const SizedBox(height: 16),
-                  ElevatedButton(
-                    onPressed: _onTapSingInButton,
-                    child: Icon(Icons.arrow_circle_right_outlined),
+                  Visibility(
+                    visible: _singInInProgress == false,
+                    replacement: Center(child: CircularProgressIndicator()),
+                    child: ElevatedButton(
+                      onPressed: _onTapSingInButton,
+                      child: Icon(Icons.arrow_circle_right_outlined),
+                    ),
                   ),
                   const SizedBox(height: 32),
                   Center(
@@ -121,10 +132,41 @@ class _SingInScreenState extends State<SingInScreen> {
     Navigator.pushReplacementNamed(context, EmailVerificationScreen.name);
   }
 
-
   void _onTapSingInButton() {
     if (_fromKey.currentState!.validate()) {
-      Navigator.pushReplacementNamed(context, HomeScreen.name);
+      _singIn();
+    }
+  }
+
+  Future<void> _singIn() async {
+    _singInInProgress = true;
+    setState(() {});
+
+    Map<String, String> requestBody = {
+      "email": _emailTEController.text.trim(),
+      "password": _passwordTEController.text,
+    };
+
+    NetworkResponse response = await NetworkCaller.postRequest(
+      url: Urls.loginUrl,
+      body: requestBody,
+    );
+
+    if (response.isSuccess) {
+      UserModel userModel = UserModel.fromJson(response.body!['data']);
+      String token = response.body!['token'];
+
+      await AuthController.saveUserData(userModel, token);
+
+      Navigator.pushNamedAndRemoveUntil(
+        context,
+        HomeScreen.name,
+        (predicate) => false,
+      );
+    } else {
+      _singInInProgress = false;
+      setState(() {});
+      ShowSnackBarMessage(context, response.errorMessage!);
     }
   }
 
