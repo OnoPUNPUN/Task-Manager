@@ -150,6 +150,7 @@ class _SingInScreenState extends State<SingInScreen> {
     NetworkResponse response = await NetworkCaller.postRequest(
       url: Urls.loginUrl,
       body: requestBody,
+      isFromLogin: true,
     );
 
     if (response.isSuccess) {
