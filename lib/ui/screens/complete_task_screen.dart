@@ -22,10 +22,10 @@ class _CompleteTaskScreenState extends State<CompleteTaskScreen> {
                 child: ListView.builder(
                   itemCount: 10,
                   itemBuilder: (context, index) {
-                    return TaskCard(
-                      chipColor: Colors.green,
-                      chipTitle: 'Completed',
-                    );
+                    // return TaskCard(
+                    //   chipColor: Colors.green,
+                    //   chipTitle: 'Completed',
+                    // );
                   },
                 ),
               ),

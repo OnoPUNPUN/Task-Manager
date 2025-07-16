@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 
+import '../../data/models/task_model.dart';
+import '../../data/service/network_caller.dart';
+import '../../data/urls.dart';
+import '../widgets/snack_bar_message.dart';
 import '../widgets/task_card.dart';
 
 class ProgressTaskScreen extends StatefulWidget {
@@ -10,6 +14,15 @@ class ProgressTaskScreen extends StatefulWidget {
 }
 
 class _ProgressTaskScreenState extends State<ProgressTaskScreen> {
+  bool _getNewTasksListInProgress = false;
+  List<TaskModel> _progressTaskList = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _getProgressTaskList();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -19,14 +32,18 @@ class _ProgressTaskScreenState extends State<ProgressTaskScreen> {
           child: Column(
             children: [
               Expanded(
-                child: ListView.builder(
-                  itemCount: 10,
-                  itemBuilder: (context, index) {
-                    return TaskCard(
-                      chipColor: Colors.purpleAccent,
-                      chipTitle: 'Progress',
-                    );
-                  },
+                child: Visibility(
+                  visible: _getNewTasksListInProgress == false,
+                  replacement: Center(child: CircularProgressIndicator()),
+                  child: ListView.builder(
+                    itemCount: _progressTaskList.length,
+                    itemBuilder: (context, index) {
+                      return TaskCard(
+                        taskType: TaskType.progress,
+                        taskModel: _progressTaskList[index],
+                      );
+                    },
+                  ),
                 ),
               ),
             ],
@@ -34,5 +51,26 @@ class _ProgressTaskScreenState extends State<ProgressTaskScreen> {
         ),
       ),
     );
+  }
+
+  Future<void> _getProgressTaskList() async {
+    _getNewTasksListInProgress = true;
+    setState(() {});
+
+    NetworkResponse response = await NetworkCaller.getRequest(
+      url: Urls.getProgressTasksUrl,
+    );
+
+    if (response.isSuccess) {
+      List<TaskModel> list = [];
+      for (Map<String, dynamic> item in response.body!['data']) {
+        list.add(TaskModel.formJson(item));
+        _progressTaskList = list;
+      }
+    } else {
+      ShowSnackBarMessage(context, response.errorMessage!);
+    }
+    _getNewTasksListInProgress = false;
+    setState(() {});
   }
 }

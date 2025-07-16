@@ -1,9 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:task_manager/data/models/task_model.dart';
+
+enum TaskType { tNew, progress, completed, cancelled }
 
 class TaskCard extends StatelessWidget {
-  final Color chipColor;
-  final String chipTitle;
-  const TaskCard({super.key, required this.chipColor, required this.chipTitle});
+  final TaskModel taskModel;
+  final TaskType taskType;
+
+  const TaskCard({
+    super.key,
+    required this.taskModel,
+    required this.taskType,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -16,26 +24,26 @@ class TaskCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Lorem Ipsum is simply dummy',
+              taskModel.title,
               style: Theme.of(
                 context,
               ).textTheme.titleMedium?.copyWith(color: Colors.black),
             ),
             Text(
-              'It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout',
+              taskModel.description,
               style: TextStyle(color: Colors.black45),
             ),
             Text(
-              "Date: 02/02/2020",
+              "Date: ${taskModel.createdDate}",
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 8),
             Row(
               children: [
                 Chip(
-                  label: Text(chipTitle, style: TextStyle(color: Colors.white)),
+                  label: Text(taskModel.status, style: TextStyle(color: Colors.white)),
                   padding: EdgeInsets.symmetric(horizontal: 16),
-                  backgroundColor: chipColor,
+                  backgroundColor: _getTaskChipColor(),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(20),
                   ),
@@ -55,5 +63,31 @@ class TaskCard extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Color _getTaskChipColor() {
+    switch (taskType) {
+      case TaskType.tNew:
+        return Colors.lightBlueAccent;
+      case TaskType.progress:
+        return Colors.purpleAccent;
+      case TaskType.completed:
+        return Colors.green;
+      case TaskType.cancelled:
+        return Colors.red;
+    }
+  }
+
+  String _getTaskTypeName() {
+    switch (taskType) {
+      case TaskType.tNew:
+        return 'New';
+      case TaskType.progress:
+        return 'Progress';
+      case TaskType.completed:
+        return 'Completed';
+      case TaskType.cancelled:
+        return 'Cancelled';
+    }
   }
 }

@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:task_manager/data/models/task_model.dart';
+import 'package:task_manager/data/service/network_caller.dart';
+import 'package:task_manager/data/urls.dart';
+import 'package:task_manager/ui/widgets/snack_bar_message.dart';
 
 import 'add_task_screen.dart';
 import '../widgets/task_card.dart';
@@ -12,6 +16,15 @@ class NewTaskScreen extends StatefulWidget {
 }
 
 class _NewTaskScreenState extends State<NewTaskScreen> {
+  bool _getNewTasksListInProgress = false;
+  List<TaskModel> _newTaskList = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _getNewTaskList();
+  }
+
   @override
   Widget build(BuildContext context) {
     const stats = [
@@ -40,14 +53,18 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
                 ),
               ),
               Expanded(
-                child: ListView.builder(
-                  itemCount: 10,
-                  itemBuilder: (context, index) {
-                    return TaskCard(
-                      chipColor: Colors.lightBlueAccent,
-                      chipTitle: 'New',
-                    );
-                  },
+                child: Visibility(
+                  visible: _getNewTasksListInProgress == false,
+                  replacement: Center(child: CircularProgressIndicator()),
+                  child: ListView.builder(
+                    itemCount: _newTaskList.length,
+                    itemBuilder: (context, index) {
+                      return TaskCard(
+                        taskType: TaskType.tNew,
+                        taskModel: _newTaskList[index],
+                      );
+                    },
+                  ),
                 ),
               ),
             ],
@@ -59,6 +76,27 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
         child: Icon(Icons.add),
       ),
     );
+  }
+
+  Future<void> _getNewTaskList() async {
+    _getNewTasksListInProgress = true;
+    setState(() {});
+
+    NetworkResponse response = await NetworkCaller.getRequest(
+      url: Urls.getNewTasksUrl,
+    );
+
+    if (response.isSuccess) {
+      List<TaskModel> list = [];
+      for (Map<String, dynamic> item in response.body!['data']) {
+        list.add(TaskModel.formJson(item));
+        _newTaskList = list;
+      }
+    } else {
+      ShowSnackBarMessage(context, response.errorMessage!);
+    }
+    _getNewTasksListInProgress = false;
+    setState(() {});
   }
 
   void _onTapAddNewTaskButton() {
