@@ -40,6 +40,9 @@ class _CompleteTaskScreenState extends State<CompleteTaskScreen> {
                       return TaskCard(
                         taskType: TaskType.completed,
                         taskModel: _completedTaskList[index],
+                        onStatusUpdate: () {
+                          _getCompletedTaskList();
+                        },
                       );
                     },
                   ),

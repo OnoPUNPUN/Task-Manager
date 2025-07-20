@@ -71,7 +71,7 @@ class NetworkCaller {
       Uri uri = Uri.parse(url);
 
       final Map<String, String> headers = {
-        'Content-Type': 'application/json',
+        'content-type': 'application/json',
         'token': AuthController.accessToken ?? '',
       };
 
@@ -93,7 +93,7 @@ class NetworkCaller {
           body: decodedBody,
         );
       } else if (response.statusCode == 401) {
-        if(isFromLogin == false) {
+        if (isFromLogin == false) {
           _onUnAuthorized();
         }
 

@@ -25,7 +25,7 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_){
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       _getNewTaskList();
       _getNTaskStatusCountList();
     });
@@ -33,7 +33,6 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       body: SafeArea(
         child: Padding(
@@ -68,6 +67,10 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
                       return TaskCard(
                         taskType: TaskType.tNew,
                         taskModel: _newTaskList[index],
+                        onStatusUpdate: () {
+                          _getNewTaskList();
+                          _getNTaskStatusCountList();
+                        },
                       );
                     },
                   ),
@@ -102,18 +105,16 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
       if (mounted) {
         ShowSnackBarMessage(context, response.errorMessage!);
       }
-
     }
     _getNewTasksListInProgress = false;
-    if(mounted) {
+    if (mounted) {
       setState(() {});
     }
-
   }
 
   Future<void> _getNTaskStatusCountList() async {
     _getTasksStatusCountInProgress = true;
-    if(mounted) {
+    if (mounted) {
       setState(() {});
     }
 
@@ -128,13 +129,12 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
         _taskStatusCountList = list;
       }
     } else {
-      if(mounted) {
+      if (mounted) {
         ShowSnackBarMessage(context, response.errorMessage!);
       }
-
     }
     _getTasksStatusCountInProgress = false;
-    if(mounted) {
+    if (mounted) {
       setState(() {});
     }
   }

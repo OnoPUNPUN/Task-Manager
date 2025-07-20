@@ -37,6 +37,9 @@ class _CanceledTaskListState extends State<CanceledTaskList> {
                     return TaskCard(
                       taskType: TaskType.cancelled,
                       taskModel: _canceledTaskList[index],
+                      onStatusUpdate: () {
+                        _getCanceledTaskList();
+                      },
                     );
                   },
                 ),
