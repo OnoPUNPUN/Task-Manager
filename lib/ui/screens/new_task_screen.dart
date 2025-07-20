@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:task_manager/data/models/task_model.dart';
+import 'package:task_manager/data/models/task_status_count_model.dart';
 import 'package:task_manager/data/service/network_caller.dart';
 import 'package:task_manager/data/urls.dart';
 import 'package:task_manager/ui/widgets/snack_bar_message.dart';
@@ -17,22 +18,21 @@ class NewTaskScreen extends StatefulWidget {
 
 class _NewTaskScreenState extends State<NewTaskScreen> {
   bool _getNewTasksListInProgress = false;
+  bool _getTasksStatusCountInProgress = false;
   List<TaskModel> _newTaskList = [];
+  List<TaskStatusCountModel> _taskStatusCountList = [];
 
   @override
   void initState() {
     super.initState();
-    _getNewTaskList();
+    WidgetsBinding.instance.addPostFrameCallback((_){
+      _getNewTaskList();
+      _getNTaskStatusCountList();
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    const stats = [
-      (9, 'Canceled'),
-      (10, 'Completed'),
-      (6, 'Progress'),
-      (11, 'New Task'),
-    ];
 
     return Scaffold(
       body: SafeArea(
@@ -44,12 +44,18 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
               const SizedBox(height: 16),
               SizedBox(
                 height: 100,
-                child: ListView.separated(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: stats.length,
-                  separatorBuilder: (_, __) => const SizedBox(width: 8),
-                  itemBuilder: (_, i) =>
-                      TaskSummaryCard(count: stats[i].$1, title: stats[i].$2),
+                child: Visibility(
+                  visible: _getTasksStatusCountInProgress == false,
+                  replacement: Center(child: CircularProgressIndicator()),
+                  child: ListView.separated(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: _taskStatusCountList.length,
+                    separatorBuilder: (_, __) => const SizedBox(width: 8),
+                    itemBuilder: (_, i) => TaskSummaryCard(
+                      count: _taskStatusCountList[i].count,
+                      title: _taskStatusCountList[i].id,
+                    ),
+                  ),
                 ),
               ),
               Expanded(
@@ -93,10 +99,44 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
         _newTaskList = list;
       }
     } else {
-      ShowSnackBarMessage(context, response.errorMessage!);
+      if (mounted) {
+        ShowSnackBarMessage(context, response.errorMessage!);
+      }
+
     }
     _getNewTasksListInProgress = false;
-    setState(() {});
+    if(mounted) {
+      setState(() {});
+    }
+
+  }
+
+  Future<void> _getNTaskStatusCountList() async {
+    _getTasksStatusCountInProgress = true;
+    if(mounted) {
+      setState(() {});
+    }
+
+    NetworkResponse response = await NetworkCaller.getRequest(
+      url: Urls.getTasksStatusCountUrl,
+    );
+
+    if (response.isSuccess) {
+      List<TaskStatusCountModel> list = [];
+      for (Map<String, dynamic> item in response.body!['data']) {
+        list.add(TaskStatusCountModel.fromJson(item));
+        _taskStatusCountList = list;
+      }
+    } else {
+      if(mounted) {
+        ShowSnackBarMessage(context, response.errorMessage!);
+      }
+
+    }
+    _getTasksStatusCountInProgress = false;
+    if(mounted) {
+      setState(() {});
+    }
   }
 
   void _onTapAddNewTaskButton() {
