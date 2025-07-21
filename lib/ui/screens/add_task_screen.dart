@@ -106,6 +106,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
 
     if (response.isSuccess) {
       _descriptionTEController.clear();
+      _titleTEController.clear();
       ShowSnackBarMessage(context, 'Task Added Successfully');
       setState(() {});
     } else {

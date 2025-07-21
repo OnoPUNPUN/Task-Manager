@@ -6,12 +6,14 @@ class Urls {
   static const String createNewTaskUrl = "$_baseUrl/createTask";
   static const String getNewTasksUrl = "$_baseUrl/listTaskByStatus/New";
   static const String getProgressTasksUrl = '$_baseUrl/listTaskByStatus/In Progress';
-  static const String getCompleteTasksUrl = "$_baseUrl/listTaskByStatus/Complete";
-  static const String getCancelledTasksUrl = "$_baseUrl/listTaskByStatus/Canceled";
+  static const String getCompleteTasksUrl = "$_baseUrl/listTaskByStatus/Completed";
+  static const String getCancelledTasksUrl = "$_baseUrl/listTaskByStatus/Cancelled";
 
   static const String getTasksStatusCountUrl = "$_baseUrl/taskStatusCount";
   static String updateTaskStatusUrl(String taskId, String status) =>
       '$_baseUrl/updateTaskStatus/$taskId/$status';
   static String deleteTaskUrl(String taskId) =>
       '$_baseUrl/deleteTask/$taskId';
+
+  static const String updateProfileUrl = '$_baseUrl/ProfileUpdate';
 }

@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:task_manager/ui/controller/auth_controller.dart';
 
@@ -39,18 +41,20 @@ class _TaskAppBarState extends State<TaskAppBar> {
               onTap: _onTapProfile,
               child: CircleAvatar(
                 radius: 24,
-                backgroundImage: const NetworkImage(
-                  'https://i.pinimg.com/736x/92/36/b9/9236b9e8e41a5e84eb0b689614aaeddf.jpg',
-                ),
+                backgroundImage: AuthController.userModel?.photo == null
+                    ? null
+                    : MemoryImage(
+                        base64Decode(AuthController.userModel!.photo!),
+                      ),
               ),
             ),
             const SizedBox(width: 10),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.center,
-              children: const [
+              children: [
                 Text(
-                  'Wasimul Bari Tonmoy',
+                  AuthController.userModel?.fullName ?? '',
                   style: TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.bold,
@@ -58,7 +62,7 @@ class _TaskAppBarState extends State<TaskAppBar> {
                   ),
                 ),
                 Text(
-                  'tonmoy@gmail.com',
+                  AuthController.userModel?.email ?? '',
                   style: TextStyle(fontSize: 13, color: Colors.white),
                 ),
               ],
