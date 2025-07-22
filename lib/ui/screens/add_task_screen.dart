@@ -108,7 +108,6 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
       _descriptionTEController.clear();
       _titleTEController.clear();
       ShowSnackBarMessage(context, 'Task Added Successfully');
-      setState(() {});
     } else {
       ShowSnackBarMessage(context, response.errorMessage!);
     }
@@ -116,8 +115,8 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
 
   @override
   void dispose() {
-    super.dispose();
     _titleTEController.dispose();
     _descriptionTEController.dispose();
+    super.dispose();
   }
 }

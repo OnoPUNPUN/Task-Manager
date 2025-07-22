@@ -114,9 +114,8 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
 
   Future<void> _getNTaskStatusCountList() async {
     _getTasksStatusCountInProgress = true;
-    if (mounted) {
       setState(() {});
-    }
+
 
     NetworkResponse response = await NetworkCaller.getRequest(
       url: Urls.getTasksStatusCountUrl,
@@ -126,8 +125,8 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
       List<TaskStatusCountModel> list = [];
       for (Map<String, dynamic> item in response.body!['data']) {
         list.add(TaskStatusCountModel.fromJson(item));
-        _taskStatusCountList = list;
       }
+      _taskStatusCountList = list;
     } else {
       if (mounted) {
         ShowSnackBarMessage(context, response.errorMessage!);

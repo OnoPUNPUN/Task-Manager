@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:typed_data';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -200,6 +201,8 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
       setState(() {});
     }
 
+    Uint8List? imageBytes;
+
     Map<String, String> requestBody = {
       "email": _emailTEController.text,
       "firstName": _firstNameTEController.text.trim(),
@@ -212,8 +215,9 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
     }
 
     if (_selectedImage != null) {
-      final imageBytes = await _selectedImage!.readAsBytes();
-      requestBody['photo'] = base64Encode(imageBytes);
+      Uint8List imageBytes = await _selectedImage!.readAsBytes();
+      String base64Image = base64Encode(imageBytes);
+      AuthController.userModel!.photo = base64Image;
     }
 
     NetworkResponse response = await NetworkCaller.postRequest(
@@ -234,7 +238,9 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
         AuthController.userModel!.lastName = _lastNameTEController.text.trim();
         AuthController.userModel!.mobile = _phoneTEController.text.trim();
         if (_selectedImage != null) {
-          AuthController.userModel!.photo = _selectedImage!.name;
+          Uint8List imageBytes = await _selectedImage!.readAsBytes();
+          String base64Image = base64Encode(imageBytes);
+          AuthController.userModel!.photo = base64Image;
         }
       }
 
@@ -247,6 +253,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
       }
     }
   }
+
 
   @override
   void dispose() {

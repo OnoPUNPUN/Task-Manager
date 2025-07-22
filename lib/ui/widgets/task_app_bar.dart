@@ -41,11 +41,19 @@ class _TaskAppBarState extends State<TaskAppBar> {
               onTap: _onTapProfile,
               child: CircleAvatar(
                 radius: 24,
-                backgroundImage: AuthController.userModel?.photo == null
+                backgroundImage:
+                    (AuthController.userModel?.photo == null ||
+                        AuthController.userModel!.photo!.isEmpty)
                     ? null
                     : MemoryImage(
                         base64Decode(AuthController.userModel!.photo!),
                       ),
+                backgroundColor: Colors.grey[400],
+                child:
+                    (AuthController.userModel?.photo == null ||
+                        AuthController.userModel!.photo!.isEmpty)
+                    ? Icon(Icons.person, color: Colors.white)
+                    : null,
               ),
             ),
             const SizedBox(width: 10),
