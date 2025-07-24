@@ -60,7 +60,10 @@ class _ProgressTaskScreenState extends State<ProgressTaskScreen> {
 
   Future<void> _getProgressTaskList() async {
     _getNewTasksListInProgress = true;
-    setState(() {});
+    if(mounted){
+      setState(() {});
+    }
+
 
     NetworkResponse response = await NetworkCaller.getRequest(
       url: Urls.getProgressTasksUrl,
@@ -77,6 +80,8 @@ class _ProgressTaskScreenState extends State<ProgressTaskScreen> {
     }
 
     _getNewTasksListInProgress = false;
-    setState(() {});
+    if(mounted){
+      setState(() {});
+    }
   }
 }

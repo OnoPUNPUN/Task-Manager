@@ -53,7 +53,9 @@ class _CanceledTaskListState extends State<CanceledTaskList> {
 
   Future<void> _getCanceledTaskList() async {
     _getNewTasksListInProgress = true;
-    setState(() {});
+    if(mounted){
+      setState(() {});
+    }
 
     NetworkResponse response = await NetworkCaller.getRequest(
       url: Urls.getCancelledTasksUrl,
@@ -68,6 +70,8 @@ class _CanceledTaskListState extends State<CanceledTaskList> {
       }
     }
     _getNewTasksListInProgress = false;
-    setState(() {});
+    if(mounted){
+      setState(() {});
+    }
   }
 }
