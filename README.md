@@ -167,7 +167,7 @@ task_manager_app/
 
 1. **Clone the Repository**
    ```bash
-   git clone https://github.com/OnoPUNPUN/task_manager.git
+   git clone https://github.com/OnoPUNPUN/Task-Manager.git
    cd task_manager
    ```
 
