@@ -16,4 +16,13 @@ class Urls {
       '$_baseUrl/deleteTask/$taskId';
 
   static const String updateProfileUrl = '$_baseUrl/ProfileUpdate';
+
+  static String recoverVerifyEmailUrl(String email) =>
+      '$_baseUrl/RecoverVerifyEmail/$email';
+
+  static String recoverVerifyOtpUrl(String email, String otp) =>
+      '$_baseUrl/RecoverVerifyOtp/$email/$otp';
+
+  static const String recoverResetPasswordUrl = '$_baseUrl/RecoverResetPassword';
+
 }

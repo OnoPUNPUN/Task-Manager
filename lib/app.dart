@@ -49,16 +49,53 @@ class TaskMangerApp extends StatelessWidget {
         ),
       ),
       initialRoute: '/',
-      routes: {
-        SplashScreen.name: (context) => SplashScreen(),
-        SingInScreen.name: (context) => SingInScreen(),
-        SingUpScreen.name: (context) => SingUpScreen(),
-        HomeScreen.name: (context) => HomeScreen(),
-        SetPasswordScreen.name: (context) => SetPasswordScreen(),
-        PinVerificationScreen.name: (context) => PinVerificationScreen(),
-        EmailVerificationScreen.name: (context) => EmailVerificationScreen(),
-        AddTaskScreen.name: (context) => AddTaskScreen(),
-        UpdateProfileScreen.name: (context) => UpdateProfileScreen(),
+      onGenerateRoute: (RouteSettings settings) {
+        switch (settings.name) {
+          case SplashScreen.name:
+            return MaterialPageRoute(
+              builder: (context) => const SplashScreen(),
+            );
+          case SingInScreen.name:
+            return MaterialPageRoute(
+              builder: (context) => const SingInScreen(),
+            );
+          case SingUpScreen.name:
+            return MaterialPageRoute(
+              builder: (context) => const SingUpScreen(),
+            );
+          case HomeScreen.name:
+            return MaterialPageRoute(builder: (context) => const HomeScreen());
+          case EmailVerificationScreen.name:
+            return MaterialPageRoute(
+              builder: (context) => const EmailVerificationScreen(),
+            );
+          case AddTaskScreen.name:
+            return MaterialPageRoute(
+              builder: (context) => const AddTaskScreen(),
+            );
+          case UpdateProfileScreen.name:
+            return MaterialPageRoute(
+              builder: (context) => const UpdateProfileScreen(),
+            );
+
+          case PinVerificationScreen.name:
+            final args = settings.arguments as Map<String, dynamic>;
+            return MaterialPageRoute(
+              builder: (context) => PinVerificationScreen(email: args['email']),
+            );
+
+          case SetPasswordScreen.name:
+            final args = settings.arguments as Map<String, dynamic>;
+            return MaterialPageRoute(
+              builder: (context) =>
+                  SetPasswordScreen(email: args['email'], otp: args['otp']),
+            );
+
+          default:
+            return MaterialPageRoute(
+              builder: (context) => const SplashScreen(),
+            );
+        }
       },
     );
   }
