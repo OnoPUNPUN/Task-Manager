@@ -3,11 +3,10 @@ import 'package:task_manager/data/models/task_model.dart';
 import 'package:task_manager/data/models/task_status_count_model.dart';
 import 'package:task_manager/data/service/network_caller.dart';
 import 'package:task_manager/data/urls.dart';
+import 'package:task_manager/ui/screens/add_task_screen.dart';
 import 'package:task_manager/ui/widgets/snack_bar_message.dart';
-
-import 'add_task_screen.dart';
-import '../widgets/task_card.dart';
-import '../widgets/task_summary_card.dart';
+import 'package:task_manager/ui/widgets/task_card.dart';
+import 'package:task_manager/ui/widgets/task_summary_card.dart';
 
 class NewTaskScreen extends StatefulWidget {
   const NewTaskScreen({super.key});
@@ -27,7 +26,7 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _getNewTaskList();
-      _getNTaskStatusCountList();
+      _getTaskStatusCountList();
     });
   }
 
@@ -44,8 +43,8 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
               SizedBox(
                 height: 100,
                 child: Visibility(
-                  visible: _getTasksStatusCountInProgress == false,
-                  replacement: Center(child: CircularProgressIndicator()),
+                  visible: !_getTasksStatusCountInProgress,
+                  replacement: const Center(child: CircularProgressIndicator()),
                   child: ListView.separated(
                     scrollDirection: Axis.horizontal,
                     itemCount: _taskStatusCountList.length,
@@ -59,8 +58,8 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
               ),
               Expanded(
                 child: Visibility(
-                  visible: _getNewTasksListInProgress == false,
-                  replacement: Center(child: CircularProgressIndicator()),
+                  visible: !_getNewTasksListInProgress,
+                  replacement: const Center(child: CircularProgressIndicator()),
                   child: ListView.builder(
                     itemCount: _newTaskList.length,
                     itemBuilder: (context, index) {
@@ -69,7 +68,7 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
                         taskModel: _newTaskList[index],
                         onStatusUpdate: () {
                           _getNewTaskList();
-                          _getNTaskStatusCountList();
+                          _getTaskStatusCountList();
                         },
                       );
                     },
@@ -82,28 +81,33 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: _onTapAddNewTaskButton,
-        child: Icon(Icons.add),
+        child: const Icon(Icons.add),
       ),
     );
   }
 
   Future<void> _getNewTaskList() async {
     _getNewTasksListInProgress = true;
-    setState(() {});
+    if (mounted) {
+      setState(() {});
+    }
 
     NetworkResponse response = await NetworkCaller.getRequest(
       url: Urls.getNewTasksUrl,
     );
 
-    if (response.isSuccess) {
+    if (response.isSuccess && response.body != null) {
       List<TaskModel> list = [];
-      for (Map<String, dynamic> item in response.body!['data']) {
+      for (Map<String, dynamic> item in response.body!['data'] ?? []) {
         list.add(TaskModel.formJson(item));
-        _newTaskList = list;
       }
+      _newTaskList = list;
     } else {
       if (mounted) {
-        ShowSnackBarMessage(context, response.errorMessage!);
+        ShowSnackBarMessage(
+          context,
+          response.errorMessage ?? 'Failed to load tasks',
+        );
       }
     }
     _getNewTasksListInProgress = false;
@@ -112,24 +116,28 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
     }
   }
 
-  Future<void> _getNTaskStatusCountList() async {
+  Future<void> _getTaskStatusCountList() async {
     _getTasksStatusCountInProgress = true;
+    if (mounted) {
       setState(() {});
-
+    }
 
     NetworkResponse response = await NetworkCaller.getRequest(
       url: Urls.getTasksStatusCountUrl,
     );
 
-    if (response.isSuccess) {
+    if (response.isSuccess && response.body != null) {
       List<TaskStatusCountModel> list = [];
-      for (Map<String, dynamic> item in response.body!['data']) {
+      for (Map<String, dynamic> item in response.body!['data'] ?? []) {
         list.add(TaskStatusCountModel.fromJson(item));
       }
       _taskStatusCountList = list;
     } else {
       if (mounted) {
-        ShowSnackBarMessage(context, response.errorMessage!);
+        ShowSnackBarMessage(
+          context,
+          response.errorMessage ?? 'Failed to load task status counts',
+        );
       }
     }
     _getTasksStatusCountInProgress = false;
@@ -138,7 +146,11 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
     }
   }
 
-  void _onTapAddNewTaskButton() {
-    Navigator.pushNamed(context, AddTaskScreen.name);
+  Future<void> _onTapAddNewTaskButton() async {
+    final result = await Navigator.pushNamed(context, AddTaskScreen.name);
+    if (result == true && mounted) {
+      _getNewTaskList();
+      _getTaskStatusCountList();
+    }
   }
 }

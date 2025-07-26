@@ -16,8 +16,7 @@ class AddTaskScreen extends StatefulWidget {
 
 class _AddTaskScreenState extends State<AddTaskScreen> {
   final TextEditingController _titleTEController = TextEditingController();
-  final TextEditingController _descriptionTEController =
-      TextEditingController();
+  final TextEditingController _descriptionTEController = TextEditingController();
   final GlobalKey<FormState> _globalKey = GlobalKey<FormState>();
   bool _addNewTaskInProgress = false;
 
@@ -42,7 +41,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                   const SizedBox(height: 16),
                   TextFormField(
                     controller: _titleTEController,
-                    decoration: InputDecoration(hintText: 'Subject'),
+                    decoration: const InputDecoration(hintText: 'Subject'),
                     validator: (String? value) {
                       if (value?.trim().isEmpty ?? true) {
                         return 'Enter Your Subject';
@@ -54,21 +53,21 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                   TextFormField(
                     controller: _descriptionTEController,
                     maxLines: 10,
-                    decoration: InputDecoration(hintText: 'Description'),
+                    decoration: const InputDecoration(hintText: 'Description'),
                     validator: (String? value) {
                       if (value?.trim().isEmpty ?? true) {
-                        return 'Enter Your Subject';
+                        return 'Enter Your Description';
                       }
                       return null;
                     },
                   ),
                   const SizedBox(height: 16),
                   Visibility(
-                    visible: _addNewTaskInProgress == false,
-                    replacement: Center(child: CircularProgressIndicator()),
+                    visible: !_addNewTaskInProgress,
+                    replacement: const Center(child: CircularProgressIndicator()),
                     child: ElevatedButton(
                       onPressed: _onTapSubmitButton,
-                      child: Icon(Icons.arrow_circle_right_outlined, size: 25),
+                      child: const Icon(Icons.arrow_circle_right_outlined, size: 25),
                     ),
                   ),
                 ],
@@ -88,7 +87,9 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
 
   Future<void> _addNewTask() async {
     _addNewTaskInProgress = true;
-    setState(() {});
+    if (mounted) {
+      setState(() {});
+    }
 
     Map<String, String> requestBody = {
       "title": _titleTEController.text.trim(),
@@ -102,14 +103,25 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
     );
 
     _addNewTaskInProgress = false;
-    setState(() {});
+    if (mounted) {
+      setState(() {});
+    }
 
     if (response.isSuccess) {
       _descriptionTEController.clear();
       _titleTEController.clear();
-      ShowSnackBarMessage(context, 'Task Added Successfully');
+      if (mounted) {
+        ShowSnackBarMessage(context, 'Task Added Successfully');
+        // Return true to indicate success
+        Navigator.pop(context, true);
+      }
     } else {
-      ShowSnackBarMessage(context, response.errorMessage!);
+      if (mounted) {
+        ShowSnackBarMessage(
+          context,
+          response.errorMessage ?? 'Failed to add task',
+        );
+      }
     }
   }
 
