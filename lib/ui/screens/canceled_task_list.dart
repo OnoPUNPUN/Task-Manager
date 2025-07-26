@@ -13,7 +13,7 @@ class CanceledTaskList extends StatefulWidget {
 }
 
 class _CanceledTaskListState extends State<CanceledTaskList> {
-  bool _getNewTasksListInProgress = false;
+  bool _getCancelledTasksListInProgress = false;
   List<TaskModel> _canceledTaskList = [];
 
   @override
@@ -31,17 +31,21 @@ class _CanceledTaskListState extends State<CanceledTaskList> {
           child: Column(
             children: [
               Expanded(
-                child: ListView.builder(
-                  itemCount: _canceledTaskList.length,
-                  itemBuilder: (context, index) {
-                    return TaskCard(
-                      taskType: TaskType.cancelled,
-                      taskModel: _canceledTaskList[index],
-                      onStatusUpdate: () {
-                        _getCanceledTaskList();
-                      },
-                    );
-                  },
+                child: Visibility(
+                  visible: _getCancelledTasksListInProgress == false,
+                  replacement: Center(child: CircularProgressIndicator()),
+                  child: ListView.builder(
+                    itemCount: _canceledTaskList.length,
+                    itemBuilder: (context, index) {
+                      return TaskCard(
+                        taskType: TaskType.cancelled,
+                        taskModel: _canceledTaskList[index],
+                        onStatusUpdate: () {
+                          _getCanceledTaskList();
+                        },
+                      );
+                    },
+                  ),
                 ),
               ),
             ],
@@ -52,8 +56,8 @@ class _CanceledTaskListState extends State<CanceledTaskList> {
   }
 
   Future<void> _getCanceledTaskList() async {
-    _getNewTasksListInProgress = true;
-    if(mounted){
+    _getCancelledTasksListInProgress = true;
+    if (mounted) {
       setState(() {});
     }
 
@@ -66,11 +70,11 @@ class _CanceledTaskListState extends State<CanceledTaskList> {
 
       for (Map<String, dynamic> item in response.body!['data']) {
         list.add(TaskModel.formJson(item));
-        _canceledTaskList = list;
       }
+      _canceledTaskList = list;
     }
-    _getNewTasksListInProgress = false;
-    if(mounted){
+    _getCancelledTasksListInProgress = false;
+    if (mounted) {
       setState(() {});
     }
   }
