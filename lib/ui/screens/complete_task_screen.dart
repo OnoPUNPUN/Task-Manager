@@ -3,6 +3,7 @@ import 'package:task_manager/data/models/task_model.dart';
 import 'package:task_manager/data/service/network_caller.dart';
 import 'package:task_manager/data/urls.dart';
 
+import '../widgets/snack_bar_message.dart';
 import '../widgets/task_card.dart';
 
 class CompleteTaskScreen extends StatefulWidget {
@@ -57,7 +58,9 @@ class _CompleteTaskScreenState extends State<CompleteTaskScreen> {
 
   Future<void> _getCompletedTaskList() async {
     _getCompletedTaskInProgress = true;
-    setState(() {});
+    if (mounted) {
+      setState(() {});
+    }
 
     NetworkResponse response = await NetworkCaller.getRequest(
       url: Urls.getCompleteTasksUrl,
@@ -67,10 +70,14 @@ class _CompleteTaskScreenState extends State<CompleteTaskScreen> {
       List<TaskModel> list = [];
       for (Map<String, dynamic> item in response.body!['data']) {
         list.add(TaskModel.formJson(item));
-        _completedTaskList = list;
       }
+      _completedTaskList = list;
+    } else {
+      ShowSnackBarMessage(context, response.errorMessage!);
     }
     _getCompletedTaskInProgress = false;
-    setState(() {});
+    if (mounted) {
+      setState(() {});
+    }
   }
 }
