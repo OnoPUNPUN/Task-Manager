@@ -109,7 +109,7 @@ class _PinVerificationScreenState extends State<PinVerificationScreen> {
     Navigator.pushNamedAndRemoveUntil(
       context,
       SingInScreen.name,
-      (route) => false,
+          (route) => false,
     );
   }
 
