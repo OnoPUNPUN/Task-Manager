@@ -56,7 +56,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                 children: [
                   const SizedBox(height: 50),
                   Text(
-                    'Updated Profile',
+                    'Update Profile',
                     style: Theme.of(context).textTheme.titleLarge,
                   ),
                   const SizedBox(height: 16),
@@ -109,21 +109,19 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                     decoration: InputDecoration(hintText: 'Password'),
                     validator: (String? value) {
                       int length = value?.length ?? 0;
-
                       if (length > 0 && length <= 6) {
-                        return 'Enter a password more than 6 letters';
+                        return 'Enter a password more than 6 characters';
                       }
-
                       return null;
                     },
                   ),
                   const SizedBox(height: 16),
                   Visibility(
-                    visible: _updateProfileInProgress == false,
-                    replacement: Center(child: CircularProgressIndicator()),
+                    visible: !_updateProfileInProgress,
+                    replacement: const Center(child: CircularProgressIndicator()),
                     child: ElevatedButton(
                       onPressed: _onTapUpdatedButton,
-                      child: Icon(Icons.arrow_circle_right_outlined, size: 25),
+                      child: const Icon(Icons.arrow_circle_right_outlined, size: 25),
                     ),
                   ),
                 ],
@@ -152,13 +150,13 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
               height: 50,
               decoration: BoxDecoration(
                 color: Colors.grey[600],
-                borderRadius: BorderRadius.only(
+                borderRadius: const BorderRadius.only(
                   topLeft: Radius.circular(8),
                   bottomLeft: Radius.circular(8),
                 ),
               ),
               alignment: Alignment.center,
-              child: Text(
+              child: const Text(
                 'Photos',
                 style: TextStyle(
                   color: Colors.white,
@@ -201,8 +199,6 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
       setState(() {});
     }
 
-    Uint8List? imageBytes;
-
     Map<String, String> requestBody = {
       "email": _emailTEController.text,
       "firstName": _firstNameTEController.text.trim(),
@@ -217,7 +213,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
     if (_selectedImage != null) {
       Uint8List imageBytes = await _selectedImage!.readAsBytes();
       String base64Image = base64Encode(imageBytes);
-      AuthController.userModel!.photo = base64Image;
+      requestBody['photo'] = base64Image;
     }
 
     NetworkResponse response = await NetworkCaller.postRequest(
@@ -245,15 +241,17 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
       }
 
       if (mounted) {
-        ShowSnackBarMessage(context, 'Profile updated');
+        ShowSnackBarMessage(context, 'Profile updated successfully');
       }
     } else {
       if (mounted) {
-        ShowSnackBarMessage(context, response.errorMessage!);
+        ShowSnackBarMessage(
+          context,
+          response.errorMessage ?? 'Failed to update profile',
+        );
       }
     }
   }
-
 
   @override
   void dispose() {
