@@ -45,6 +45,13 @@ class NetworkCaller {
           statusCode: response.statusCode,
           body: decodedBody,
         );
+      } else if (response.statusCode == 401) {
+        _onUnAuthorized();
+        return NetworkResponse(
+          isSuccess: false,
+          statusCode: response.statusCode,
+          errorMessage: _unAuthorizedMessage,
+        );
       } else {
         final decodedBody = jsonDecode(response.body);
         return NetworkResponse(
@@ -120,33 +127,36 @@ class NetworkCaller {
   }
 
   static void _logRequest(
-    String url,
-    Map<String, String>? body,
-    Map<String, String>? headers,
-  ) {
+      String url,
+      Map<String, String>? body,
+      Map<String, String>? headers,
+      ) {
     debugPrint(
       '================== REQUEST ========================\n'
-      'URL: $url\n'
-      'HEADERS: $headers\n'
-      'BODY: $body\n'
-      '=============================================',
+          'URL: $url\n'
+          'HEADERS: $headers\n'
+          'BODY: $body\n'
+          '=============================================',
     );
   }
 
   static void _logResponse(String url, Response response) {
     debugPrint(
       '=================== RESPONSE =======================\n'
-      'URL: $url\n'
-      'STATUS CODE: ${response.statusCode}\n'
-      'BODY: ${response.body}\n'
-      '=============================================',
+          'URL: $url\n'
+          'STATUS CODE: ${response.statusCode}\n'
+          'BODY: ${response.body}\n'
+          '=============================================',
     );
   }
 
   static Future<void> _onUnAuthorized() async {
     await AuthController.removeUserData();
-    Navigator.of(
-      TaskMangerApp.navigator.currentContext!,
-    ).pushNamedAndRemoveUntil(SingInScreen.name, (predicate) => false);
+    final context = TaskMangerApp.navigator.currentContext;
+    if (context != null && context.mounted) {
+      Navigator.of(
+        context,
+      ).pushNamedAndRemoveUntil(SingInScreen.name, (predicate) => false);
+    }
   }
 }
