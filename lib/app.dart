@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart'; // Import GetX
+import 'package:task_manager/controller_binders.dart';
 import 'package:task_manager/ui/screens/add_task_screen.dart';
 import 'package:task_manager/ui/screens/Forgot%20Password%20Screens/email_verification_screen.dart';
 import 'package:task_manager/ui/screens/Forgot%20Password%20Screens/pin_verification_screen.dart';
@@ -16,8 +18,10 @@ class TaskMangerApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return GetMaterialApp(
       debugShowCheckedModeBanner: false,
+      navigatorKey: navigator,
+      // Retain the navigator key if needed
       theme: ThemeData(
         colorSchemeSeed: Colors.green,
         textTheme: TextTheme(
@@ -48,55 +52,44 @@ class TaskMangerApp extends StatelessWidget {
           ),
         ),
       ),
-      initialRoute: '/',
-      onGenerateRoute: (RouteSettings settings) {
-        switch (settings.name) {
-          case SplashScreen.name:
-            return MaterialPageRoute(
-              builder: (context) => const SplashScreen(),
+      initialRoute: SplashScreen.name,
+      getPages: [
+        GetPage(name: SplashScreen.name, page: () => const SplashScreen()),
+        GetPage(name: SingInScreen.name, page: () => const SingInScreen()),
+        GetPage(name: SingUpScreen.name, page: () => const SingUpScreen()),
+        GetPage(name: HomeScreen.name, page: () => const HomeScreen()),
+        GetPage(
+          name: EmailVerificationScreen.name,
+          page: () => const EmailVerificationScreen(),
+        ),
+        GetPage(name: AddTaskScreen.name, page: () => const AddTaskScreen()),
+        GetPage(
+          name: UpdateProfileScreen.name,
+          page: () => const UpdateProfileScreen(),
+        ),
+        GetPage(
+          name: PinVerificationScreen.name,
+          page: () {
+            final args = Get.arguments as Map<String, dynamic>?;
+            return PinVerificationScreen(email: args?['email'] ?? '');
+          },
+        ),
+        GetPage(
+          name: SetPasswordScreen.name,
+          page: () {
+            final args = Get.arguments as Map<String, dynamic>?;
+            return SetPasswordScreen(
+              email: args?['email'] ?? '',
+              otp: args?['otp'] ?? '',
             );
-          case SingInScreen.name:
-            return MaterialPageRoute(
-              builder: (context) => const SingInScreen(),
-            );
-          case SingUpScreen.name:
-            return MaterialPageRoute(
-              builder: (context) => const SingUpScreen(),
-            );
-          case HomeScreen.name:
-            return MaterialPageRoute(builder: (context) => const HomeScreen());
-          case EmailVerificationScreen.name:
-            return MaterialPageRoute(
-              builder: (context) => const EmailVerificationScreen(),
-            );
-          case AddTaskScreen.name:
-            return MaterialPageRoute(
-              builder: (context) => const AddTaskScreen(),
-            );
-          case UpdateProfileScreen.name:
-            return MaterialPageRoute(
-              builder: (context) => const UpdateProfileScreen(),
-            );
-
-          case PinVerificationScreen.name:
-            final args = settings.arguments as Map<String, dynamic>;
-            return MaterialPageRoute(
-              builder: (context) => PinVerificationScreen(email: args['email']),
-            );
-
-          case SetPasswordScreen.name:
-            final args = settings.arguments as Map<String, dynamic>;
-            return MaterialPageRoute(
-              builder: (context) =>
-                  SetPasswordScreen(email: args['email'], otp: args['otp']),
-            );
-
-          default:
-            return MaterialPageRoute(
-              builder: (context) => const SplashScreen(),
-            );
-        }
-      },
+          },
+        ),
+      ],
+      unknownRoute: GetPage(
+        name: '/notfound',
+        page: () => const SplashScreen(),
+      ),
+      initialBinding: ControllerBinders(),
     );
   }
 }

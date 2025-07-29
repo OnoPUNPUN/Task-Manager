@@ -78,7 +78,7 @@ class NetworkCaller {
       Uri uri = Uri.parse(url);
 
       final Map<String, String> headers = {
-        'content-type': 'application/json', // Niggggggggggggggaaaaaaaaaaaa
+        'content-type': 'application/json',
         'token': AuthController.accessToken ?? '',
       };
 
