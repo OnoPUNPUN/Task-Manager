@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:task_manager/data/models/task_model.dart';
+import 'package:get/get.dart';
 import 'package:task_manager/data/models/task_status_count_model.dart';
 import 'package:task_manager/data/service/network_caller.dart';
 import 'package:task_manager/data/urls.dart';
+import 'package:task_manager/ui/controller/new_task_list_controller.dart';
 import 'package:task_manager/ui/screens/add_task_screen.dart';
 import 'package:task_manager/ui/widgets/snack_bar_message.dart';
 import 'package:task_manager/ui/widgets/task_card.dart';
@@ -16,16 +17,14 @@ class NewTaskScreen extends StatefulWidget {
 }
 
 class _NewTaskScreenState extends State<NewTaskScreen> {
-  bool _getNewTasksListInProgress = false;
   bool _getTasksStatusCountInProgress = false;
-  List<TaskModel> _newTaskList = [];
   List<TaskStatusCountModel> _taskStatusCountList = [];
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _getNewTaskList();
+      Get.find<NewTaskListController>().getNewTaskList();
       _getTaskStatusCountList();
     });
   }
@@ -57,22 +56,29 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
                 ),
               ),
               Expanded(
-                child: Visibility(
-                  visible: !_getNewTasksListInProgress,
-                  replacement: const Center(child: CircularProgressIndicator()),
-                  child: ListView.builder(
-                    itemCount: _newTaskList.length,
-                    itemBuilder: (context, index) {
-                      return TaskCard(
-                        taskType: TaskType.tNew,
-                        taskModel: _newTaskList[index],
-                        onStatusUpdate: () {
-                          _getNewTaskList();
-                          _getTaskStatusCountList();
+                child: GetBuilder<NewTaskListController>(
+                  builder: (controller) {
+                    return Visibility(
+                      visible: controller.inProgress == false,
+                      replacement: const Center(
+                        child: CircularProgressIndicator(),
+                      ),
+                      child: ListView.builder(
+                        itemCount: controller.newTaskList.length,
+                        itemBuilder: (context, index) {
+                          return TaskCard(
+                            taskType: TaskType.tNew,
+                            taskModel: controller.newTaskList[index],
+                            onStatusUpdate: () {
+                              Get.find<NewTaskListController>()
+                                  .getNewTaskList();
+                              _getTaskStatusCountList();
+                            },
+                          );
                         },
-                      );
-                    },
-                  ),
+                      ),
+                    );
+                  },
                 ),
               ),
             ],
@@ -84,36 +90,6 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
         child: const Icon(Icons.add),
       ),
     );
-  }
-
-  Future<void> _getNewTaskList() async {
-    _getNewTasksListInProgress = true;
-    if (mounted) {
-      setState(() {});
-    }
-
-    NetworkResponse response = await NetworkCaller.getRequest(
-      url: Urls.getNewTasksUrl,
-    );
-
-    if (response.isSuccess && response.body != null) {
-      List<TaskModel> list = [];
-      for (Map<String, dynamic> item in response.body!['data'] ?? []) {
-        list.add(TaskModel.formJson(item));
-      }
-      _newTaskList = list;
-    } else {
-      if (mounted) {
-        ShowSnackBarMessage(
-          context,
-          response.errorMessage ?? 'Failed to load tasks',
-        );
-      }
-    }
-    _getNewTasksListInProgress = false;
-    if (mounted) {
-      setState(() {});
-    }
   }
 
   Future<void> _getTaskStatusCountList() async {
@@ -149,7 +125,7 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
   Future<void> _onTapAddNewTaskButton() async {
     final result = await Navigator.pushNamed(context, AddTaskScreen.name);
     if (result == true && mounted) {
-      _getNewTaskList();
+      Get.find<NewTaskListController>().getNewTaskList();
       _getTaskStatusCountList();
     }
   }
