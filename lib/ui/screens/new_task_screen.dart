@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:task_manager/data/models/task_status_count_model.dart';
 import 'package:task_manager/ui/controller/new_task_list_controller.dart';
 import 'package:task_manager/ui/controller/task_status_count_controller.dart';
 import 'package:task_manager/ui/screens/add_task_screen.dart';
@@ -93,36 +92,6 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
       ),
     );
   }
-
-  // Future<void> _getTaskStatusCountList() async {
-  //   _getTasksStatusCountInProgress = true;
-  //   if (mounted) {
-  //     setState(() {});
-  //   }
-  //
-  //   NetworkResponse response = await NetworkCaller.getRequest(
-  //     url: Urls.getTasksStatusCountUrl,
-  //   );
-  //
-  //   if (response.isSuccess && response.body != null) {
-  //     List<TaskStatusCountModel> list = [];
-  //     for (Map<String, dynamic> item in response.body!['data'] ?? []) {
-  //       list.add(TaskStatusCountModel.fromJson(item));
-  //     }
-  //     _taskStatusCountList = list;
-  //   } else {
-  //     if (mounted) {
-  //       ShowSnackBarMessage(
-  //         context,
-  //         response.errorMessage ?? 'Failed to load task status counts',
-  //       );
-  //     }
-  //   }
-  //   _getTasksStatusCountInProgress = false;
-  //   if (mounted) {
-  //     setState(() {});
-  //   }
-  // }
 
   Future<void> _onTapAddNewTaskButton() async {
     final result = await Navigator.pushNamed(context, AddTaskScreen.name);
