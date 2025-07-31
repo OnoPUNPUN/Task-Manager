@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:task_manager/data/models/task_model.dart';
-import 'package:task_manager/data/service/network_caller.dart';
-import 'package:task_manager/data/urls.dart';
-
+import 'package:get/get.dart';
+import 'package:task_manager/ui/controller/canceled_task_controller.dart';
 import '../widgets/task_card.dart';
 
 class CanceledTaskList extends StatefulWidget {
@@ -13,13 +11,10 @@ class CanceledTaskList extends StatefulWidget {
 }
 
 class _CanceledTaskListState extends State<CanceledTaskList> {
-  bool _getCancelledTasksListInProgress = false;
-  List<TaskModel> _canceledTaskList = [];
-
   @override
   void initState() {
     super.initState();
-    _getCanceledTaskList();
+    Get.find<CanceledTaskController>().getCanceledTaskList();
   }
 
   @override
@@ -31,21 +26,26 @@ class _CanceledTaskListState extends State<CanceledTaskList> {
           child: Column(
             children: [
               Expanded(
-                child: Visibility(
-                  visible: _getCancelledTasksListInProgress == false,
-                  replacement: Center(child: CircularProgressIndicator()),
-                  child: ListView.builder(
-                    itemCount: _canceledTaskList.length,
-                    itemBuilder: (context, index) {
-                      return TaskCard(
-                        taskType: TaskType.cancelled,
-                        taskModel: _canceledTaskList[index],
-                        onStatusUpdate: () {
-                          _getCanceledTaskList();
+                child: GetBuilder<CanceledTaskController>(
+                  builder: (controller) {
+                    return Visibility(
+                      visible: controller.inProgress == false,
+                      replacement: Center(child: CircularProgressIndicator()),
+                      child: ListView.builder(
+                        itemCount: controller.canceledTaskList.length,
+                        itemBuilder: (context, index) {
+                          return TaskCard(
+                            taskType: TaskType.cancelled,
+                            taskModel: controller.canceledTaskList[index],
+                            onStatusUpdate: () {
+                              Get.find<CanceledTaskController>()
+                                  .getCanceledTaskList();
+                            },
+                          );
                         },
-                      );
-                    },
-                  ),
+                      ),
+                    );
+                  },
                 ),
               ),
             ],
@@ -55,27 +55,27 @@ class _CanceledTaskListState extends State<CanceledTaskList> {
     );
   }
 
-  Future<void> _getCanceledTaskList() async {
-    _getCancelledTasksListInProgress = true;
-    if (mounted) {
-      setState(() {});
-    }
-
-    NetworkResponse response = await NetworkCaller.getRequest(
-      url: Urls.getCancelledTasksUrl,
-    );
-
-    if (response.isSuccess) {
-      List<TaskModel> list = [];
-
-      for (Map<String, dynamic> item in response.body!['data']) {
-        list.add(TaskModel.formJson(item));
-      }
-      _canceledTaskList = list;
-    }
-    _getCancelledTasksListInProgress = false;
-    if (mounted) {
-      setState(() {});
-    }
-  }
+  // Future<void> _getCanceledTaskList() async {
+  //   _getCancelledTasksListInProgress = true;
+  //   if (mounted) {
+  //     setState(() {});
+  //   }
+  //
+  //   NetworkResponse response = await NetworkCaller.getRequest(
+  //     url: Urls.getCancelledTasksUrl,
+  //   );
+  //
+  //   if (response.isSuccess) {
+  //     List<TaskModel> list = [];
+  //
+  //     for (Map<String, dynamic> item in response.body!['data']) {
+  //       list.add(TaskModel.formJson(item));
+  //     }
+  //     _canceledTaskList = list;
+  //   }
+  //   _getCancelledTasksListInProgress = false;
+  //   if (mounted) {
+  //     setState(() {});
+  //   }
+  // }
 }
