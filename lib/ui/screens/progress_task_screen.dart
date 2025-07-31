@@ -57,30 +57,4 @@ class _ProgressTaskScreenState extends State<ProgressTaskScreen> {
     );
   }
 
-  // Future<void> _getProgressTaskList() async {
-  //   _getNewTasksListInProgress = true;
-  //   if(mounted){
-  //     setState(() {});
-  //   }
-  //
-  //
-  //   NetworkResponse response = await NetworkCaller.getRequest(
-  //     url: Urls.getProgressTasksUrl,
-  //   );
-  //
-  //   if (response.isSuccess) {
-  //     List<TaskModel> list = [];
-  //     for (Map<String, dynamic> jsonData in response.body!['data']) {
-  //       list.add(TaskModel.formJson(jsonData));
-  //     }
-  //     _progressTaskList = list;
-  //   } else {
-  //     ShowSnackBarMessage(context, response.errorMessage!);
-  //   }
-  //
-  //   _getNewTasksListInProgress = false;
-  //   if(mounted){
-  //     setState(() {});
-  //   }
-  // }
 }
