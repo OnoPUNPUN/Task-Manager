@@ -1,4 +1,3 @@
-import 'package:email_validator/email_validator.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -6,23 +5,31 @@ import 'package:task_manager/ui/controller/Forget%20Password%20Controller/email_
 import 'package:task_manager/ui/screens/Forgot%20Password%20Screens/pin_verification_screen.dart';
 import 'package:task_manager/ui/widgets/screen_background.dart';
 import 'package:task_manager/ui/widgets/snack_bar_message.dart';
-import '../sing_in_screen.dart';
 
 class EmailVerificationScreen extends StatefulWidget {
-  const EmailVerificationScreen({super.key});
+  final String? email;
+
+  const EmailVerificationScreen({super.key, this.email});
 
   static const String name = '/email-verification';
 
   @override
-  State<EmailVerificationScreen> createState() =>
-      _EmailVerificationScreenState();
+  State<EmailVerificationScreen> createState() => _EmailVerificationScreenState();
 }
 
 class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
   final TextEditingController _emailTEController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final EmailVerificationController _emailVerificationController =
-      Get.find<EmailVerificationController>();
+  Get.find<EmailVerificationController>();
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.email != null) {
+      _emailTEController.text = widget.email!;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -44,17 +51,22 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    'A 6 digit verification pin will be sent to your email address',
+                    'A 6 digit verification pin will send to your email address',
                     style: Theme.of(context).textTheme.titleMedium,
                   ),
                   const SizedBox(height: 24),
                   TextFormField(
                     controller: _emailTEController,
-                    decoration: const InputDecoration(hintText: 'Email'),
+                    keyboardType: TextInputType.emailAddress,
+                    decoration: const InputDecoration(
+                      hintText: 'Email',
+                    ),
                     validator: (String? value) {
-                      String email = value ?? '';
-                      if (!EmailValidator.validate(email)) {
-                        return 'Enter a valid Email';
+                      if (value?.isEmpty ?? true) {
+                        return 'Enter your email';
+                      }
+                      if (!GetUtils.isEmail(value!)) {
+                        return 'Enter a valid email';
                       }
                       return null;
                     },
@@ -68,8 +80,8 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
                           child: CircularProgressIndicator(),
                         ),
                         child: ElevatedButton(
-                          onPressed: _onTapConfirmButton,
-                          child: const Icon(Icons.arrow_circle_right_outlined),
+                          onPressed: _onTapVerifyButton,
+                          child: const Text('Verify'),
                         ),
                       );
                     },
@@ -78,7 +90,7 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
                   Center(
                     child: RichText(
                       text: TextSpan(
-                        text: 'Have account? ',
+                        text: 'Go back? ',
                         style: const TextStyle(
                           color: Colors.black,
                           letterSpacing: 0.4,
@@ -109,10 +121,10 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
   }
 
   void _onTapSignInButton() {
-    Get.offNamed(SingInScreen.name);
+    Get.offAllNamed('/sing-in'); // Adjusted to match SingInScreen.name
   }
 
-  void _onTapConfirmButton() {
+  void _onTapVerifyButton() {
     if (_formKey.currentState!.validate()) {
       _verifyEmail();
     }
@@ -126,14 +138,11 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
     if (isSuccess) {
       Get.offNamed(
         PinVerificationScreen.name,
-        arguments: _emailTEController.text.trim(),
+        arguments: {'email': _emailTEController.text.trim()},
       );
     } else {
       if (mounted) {
-        ShowSnackBarMessage(
-          context,
-          _emailVerificationController.errorMessage!,
-        );
+        ShowSnackBarMessage(context, _emailVerificationController.errorMessage!);
       }
     }
   }

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart'; // Import GetX
+import 'package:get/get.dart';
 import 'package:task_manager/controller_binders.dart';
 import 'package:task_manager/ui/screens/add_task_screen.dart';
 import 'package:task_manager/ui/screens/Forgot%20Password%20Screens/email_verification_screen.dart';
@@ -11,8 +11,8 @@ import 'package:task_manager/ui/screens/sing_up_screen.dart';
 import 'package:task_manager/ui/screens/splash_screen.dart';
 import 'package:task_manager/ui/screens/update_profile_screen.dart';
 
-class TaskMangerApp extends StatelessWidget {
-  const TaskMangerApp({super.key});
+class TaskManagerApp extends StatelessWidget {
+  const TaskManagerApp({super.key});
 
   static GlobalKey<NavigatorState> navigator = GlobalKey<NavigatorState>();
 
@@ -21,33 +21,29 @@ class TaskMangerApp extends StatelessWidget {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
       navigatorKey: navigator,
-      // Retain the navigator key if needed
       theme: ThemeData(
         colorSchemeSeed: Colors.green,
-        textTheme: TextTheme(
+        textTheme: const TextTheme(
           titleLarge: TextStyle(fontSize: 35, fontWeight: FontWeight.w700),
           titleMedium: TextStyle(fontSize: 16, color: Colors.grey),
         ),
-        inputDecorationTheme: InputDecorationTheme(
+        inputDecorationTheme: const InputDecorationTheme(
           fillColor: Colors.white,
           filled: true,
           hintStyle: TextStyle(color: Colors.grey),
           border: OutlineInputBorder(borderSide: BorderSide.none),
           focusedBorder: OutlineInputBorder(borderSide: BorderSide.none),
           errorBorder: OutlineInputBorder(borderSide: BorderSide.none),
-          contentPadding: const EdgeInsets.symmetric(
-            horizontal: 16,
-            vertical: 12,
-          ),
+          contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         ),
         elevatedButtonTheme: ElevatedButtonThemeData(
           style: ElevatedButton.styleFrom(
-            fixedSize: Size.fromWidth(double.maxFinite),
+            fixedSize: const Size.fromWidth(double.maxFinite),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(8),
             ),
             padding: const EdgeInsets.symmetric(vertical: 12),
-            backgroundColor: Color(0xFF21bf73),
+            backgroundColor: const Color(0xFF21bf73),
             foregroundColor: Colors.white,
           ),
         ),
@@ -71,18 +67,15 @@ class TaskMangerApp extends StatelessWidget {
           name: PinVerificationScreen.name,
           page: () {
             final args = Get.arguments as Map<String, dynamic>?;
-            return PinVerificationScreen(email: args?['email'] ?? '');
+            if (args == null || !args.containsKey('email')) {
+              return const PinVerificationScreen(email: '');
+            }
+            return PinVerificationScreen(email: args['email'] as String);
           },
         ),
         GetPage(
           name: SetPasswordScreen.name,
-          page: () {
-            final args = Get.arguments as Map<String, dynamic>?;
-            return SetPasswordScreen(
-              email: args?['email'] ?? '',
-              otp: args?['otp'] ?? '',
-            );
-          },
+          page: () => const SetPasswordScreen(),
         ),
       ],
       unknownRoute: GetPage(

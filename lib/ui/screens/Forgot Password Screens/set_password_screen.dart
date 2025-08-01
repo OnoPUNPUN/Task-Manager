@@ -1,18 +1,15 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:task_manager/data/service/network_caller.dart';
-import 'package:task_manager/data/urls.dart';
+import 'package:get/get.dart';
+import 'package:task_manager/ui/controller/Forget%20Password%20Controller/set_password_controller.dart';
 import 'package:task_manager/ui/screens/sing_in_screen.dart';
 import 'package:task_manager/ui/widgets/screen_background.dart';
 import 'package:task_manager/ui/widgets/snack_bar_message.dart';
 
 class SetPasswordScreen extends StatefulWidget {
-  final String email;
-  final String otp;
-
-  const SetPasswordScreen({super.key, required this.email, required this.otp});
-
   static const String name = '/set-password';
+
+  const SetPasswordScreen({super.key});
 
   @override
   State<SetPasswordScreen> createState() => _SetPasswordScreenState();
@@ -23,7 +20,29 @@ class _SetPasswordScreenState extends State<SetPasswordScreen> {
   final TextEditingController _passwordTEController = TextEditingController();
   final TextEditingController _confirmPasswordTEController =
       TextEditingController();
-  bool _setPasswordInProgress = false;
+  final SetPasswordController _setPasswordController =
+      Get.find<SetPasswordController>();
+  late final String email;
+  late final String otp;
+
+  @override
+  void initState() {
+    super.initState();
+    print(
+      'SetPasswordScreen received args: $Get.arguments, type: ${Get.arguments.runtimeType}',
+    );
+    final dynamic args = Get.arguments;
+    if (args is Map<String, dynamic>) {
+      email = args['email'] ?? '';
+      otp = args['otp'] ?? '';
+    } else if (args is String) {
+      email = args;
+      otp = '';
+    } else {
+      email = '';
+      otp = '';
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -82,15 +101,19 @@ class _SetPasswordScreenState extends State<SetPasswordScreen> {
                     },
                   ),
                   const SizedBox(height: 16),
-                  Visibility(
-                    visible: !_setPasswordInProgress,
-                    replacement: const Center(
-                      child: CircularProgressIndicator(),
-                    ),
-                    child: ElevatedButton(
-                      onPressed: _onTapConfirmButton,
-                      child: const Text('Confirm'),
-                    ),
+                  GetBuilder<SetPasswordController>(
+                    builder: (controller) {
+                      return Visibility(
+                        visible: !controller.inProgress,
+                        replacement: const Center(
+                          child: CircularProgressIndicator(),
+                        ),
+                        child: ElevatedButton(
+                          onPressed: _onTapConfirmButton,
+                          child: const Text('Confirm'),
+                        ),
+                      );
+                    },
                   ),
                   const SizedBox(height: 32),
                   Center(
@@ -127,7 +150,7 @@ class _SetPasswordScreenState extends State<SetPasswordScreen> {
   }
 
   void _onTapSignInButton() {
-    Navigator.pushReplacementNamed(context, SingInScreen.name);
+    Get.offAllNamed(SingInScreen.name);
   }
 
   void _onTapConfirmButton() {
@@ -137,38 +160,30 @@ class _SetPasswordScreenState extends State<SetPasswordScreen> {
   }
 
   Future<void> _resetPassword() async {
-    _setPasswordInProgress = true;
-    setState(() {});
-
-    Map<String, String> requestBody = {
-      'email': widget.email,
-      'OTP': widget.otp,
-      'password': _passwordTEController.text.trim(),
-    };
-
-    final NetworkResponse response = await NetworkCaller.postRequest(
-      url: Urls.recoverResetPasswordUrl,
-      body: requestBody,
+    if (email.isEmpty || otp.isEmpty) {
+      if (mounted) {
+        ShowSnackBarMessage(context, 'Invalid email or OTP');
+      }
+      return;
+    }
+    final bool isSuccess = await _setPasswordController.resetPassword(
+      email: email,
+      otp: otp,
+      password: _passwordTEController.text.trim(),
     );
 
-    _setPasswordInProgress = false;
-    setState(() {});
-
-    if (response.isSuccess) {
-      ShowSnackBarMessage(
-        context,
-        'Password reset successful. Please sign in.',
-      );
-      Navigator.pushNamedAndRemoveUntil(
-        context,
-        SingInScreen.name,
-        (route) => false,
-      );
+    if (isSuccess) {
+      if (mounted) {
+        ShowSnackBarMessage(
+          context,
+          'Password reset successful. Please sign in.',
+        );
+        Get.offAllNamed(SingInScreen.name);
+      }
     } else {
-      ShowSnackBarMessage(
-        context,
-        response.errorMessage ?? 'Password reset failed',
-      );
+      if (mounted) {
+        ShowSnackBarMessage(context, _setPasswordController.errorMessage!);
+      }
     }
   }
 

@@ -1,5 +1,7 @@
 import 'package:get/get.dart';
 import 'package:task_manager/ui/controller/Forget%20Password%20Controller/email_verification_controller.dart';
+import 'package:task_manager/ui/controller/Forget%20Password%20Controller/pin_verification_controller.dart';
+import 'package:task_manager/ui/controller/Forget%20Password%20Controller/set_password_controller.dart';
 import 'package:task_manager/ui/controller/add_task_controller.dart';
 import 'package:task_manager/ui/controller/auth_controller.dart';
 import 'package:task_manager/ui/controller/canceled_task_controller.dart';
@@ -23,5 +25,7 @@ class ControllerBinders extends Bindings {
     Get.put(AuthController());
     Get.put(AddTaskController());
     Get.put(EmailVerificationController());
+    Get.put(PinVerificationController());
+    Get.put(SetPasswordController());
   }
 }
